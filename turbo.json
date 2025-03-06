@@ -1,0 +1,31 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    // https://turbo.build/repo/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-ran-in-parallel
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "build": {
+      "dependsOn": ["^build", "check-types", "format"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "lint": {
+      "dependsOn": ["^transit"],
+      "outputs": [".next/cache/eslint/*", "node_modules/.cache/eslint/.eslint-cache"]
+    },
+    "check-types": {
+      "dependsOn": ["^transit"],
+      "outputs": ["node_modules/.cache/typescript/.tsbuildinfo"]
+    },
+    "format": {
+      "dependsOn": ["lint"],
+      "outputs": ["node_modules/.cache/prettier/.prettier-cache"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
